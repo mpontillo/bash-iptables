@@ -1,5 +1,12 @@
-# Show commands for prettier `iptables` output.
-function show-iptable() {
+#!/bin/bash
+
+if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
+    echo "Please source this script. For example:"
+    echo "    . ${BASH_SOURCE[0]}"
+fi
+
+# Show commands for readable, complete `iptables` output with line numbers.
+function show-iptable {
     table="$1"
     if [ "$table" == "" ]; then
         table="filter"
@@ -12,25 +19,25 @@ function show-iptable() {
     echo ""
 }
 
-function show-iptables() {
+function show-iptables {
     TABLES="$(cat /proc/net/ip_tables_names)"
     for table in $TABLES; do
         show-iptable "$table"
     done
 }
 
-function _is_numeric() {
+function _IPTABLES_is_numeric {
     case "$1" in
         ''|*[!0-9]*)
             false
-        ;;
+            ;;
         *)
             true
-        ;;
+            ;;
     esac
 }
 
-function IPTABLES_add_rule() {
+function add-iptables-rule {
     # The first argument must specify the table name. If the first argument
     # starts with a '-', it will be considered an action, and the default
     # table (filter) will be used.
@@ -62,7 +69,7 @@ function IPTABLES_add_rule() {
         return
     fi
     local rulenum=" "
-    if _is_numeric "$1"; then
+    if _IPTABLES_is_numeric "$1"; then
         rulenum=" $1 "
         shift
     fi
